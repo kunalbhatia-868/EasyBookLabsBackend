@@ -48,7 +48,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'auth_api.apps.AuthApiConfig',
     'booking_api.apps.BookingApiConfig',
-    'drf_yasg'
+    'payment_api.apps.PaymentApiConfig',
+    'drf_yasg',
 ]
 
 MIDDLEWARE = [
