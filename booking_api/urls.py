@@ -48,5 +48,6 @@ urlpatterns = [
     path('researcher/<uuid:id>/',ResearchDetailView.as_view()),
     path('confirm/<uuid:id>/',ConfirmationListCreateView.as_view()),
     path('confirm/<uuid:id>/edit/',ConfirmationListCreateView.as_view()),
-    path('booking/<uuid:id>/evaluation/',BookingEvaluation.as_view())
+    path('booking/<uuid:id>/evaluation/',BookingEvaluation.as_view()),
+    path('search/labs/lab_type/',LabTypeSearch.as_view())
 ]
