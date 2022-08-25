@@ -100,7 +100,7 @@ class Lab(models.Model):
     
     @staticmethod
     def get_labs_by_lab_type(text):
-        return Lab.objects.filter(type__icontains=text)
+        return LabType.objects.filter(name__icontains=text)
 
 class Slot(models.Model):
     class DayChoices(models.TextChoices):
