@@ -221,12 +221,8 @@ class BookingStudentListCreateView(APIView):
         return Response(serializer.data,status=status.HTTP_200_OK)
 
     def post(self,request,id):
-        student_id=id
-        slot_id=request.data['slot_id']
-        lab_id=request.data['lab_id']
-        date=request.data['date']
-
-        serializer=BookingSerializer(lab_id=lab_id,slot_id=slot_id,student_id=student_id,date=date)
+        request.data['student_id']=id
+        serializer=BookingSerializer(data=request.data)
         if(serializer.is_valid()):
             serializer.save()
             return Response(serializer.data,status=status.HTTP_201_CREATED)
