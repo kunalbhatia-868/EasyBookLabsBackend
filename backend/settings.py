@@ -47,7 +47,8 @@ INSTALLED_APPS = [
     'corsheaders',
     'rest_framework',
     'auth_api.apps.AuthApiConfig',
-    'booking_api.apps.BookingApiConfig'
+    'booking_api.apps.BookingApiConfig',
+    'drf_yasg'
 ]
 
 MIDDLEWARE = [
