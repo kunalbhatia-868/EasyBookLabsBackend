@@ -10,7 +10,9 @@ from .models import (
     Slot,
     Booking,
     Rating,
-    Professor
+    Professor,
+    Confirmation,
+    StudentEvaluation
 )
 
 class LabTypeSerializer(serializers.ModelSerializer):
@@ -53,9 +55,14 @@ class SlotSerializer(serializers.ModelSerializer):
         return response
 
 class BookingSerializer(serializers.ModelSerializer):
+    is_reviewed=serializers.SerializerMethodField()
     class Meta:
         model=Booking
         fields="__all__"
+
+    def get_is_reviewed(self, obj):
+        is_reviewed=StudentEvaluation.objects.filter(booking_id=obj.id).exists()
+        return is_reviewed
 
     def to_representation(self, instance):
         response = super().to_representation(instance)
@@ -83,3 +90,14 @@ class ProfessorSerializer(serializers.ModelSerializer):
             response = super().to_representation(instance)
             response['institute_id']=InstituteSerializer(instance.institute_id).data
             return response
+
+class ConfirmationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=Confirmation
+        fields="__all__"
+
+class StudentEvaluationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=StudentEvaluation
+        fields="__all__"
+        

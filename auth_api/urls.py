@@ -2,6 +2,7 @@ from django.urls import path
 from .views import (
     InstituteListView,
     InstituteDetailView,
+    InstituteStudentsEvaluations,
     InstituteUpdateView,
     StudentDetailView,
     UserProfileSignup,
@@ -18,6 +19,7 @@ urlpatterns = [
     path("student/<uuid:pk>/",StudentDetailView.as_view()),
     path("institutes/",InstituteListView.as_view()),
     path("institutes/<uuid:pk>/update/",InstituteUpdateView.as_view()),
+    path('institutes/<uuid:id>/student-evaluations/',InstituteStudentsEvaluations.as_view()),
     path("institutes/<uuid:pk>/",InstituteDetailView.as_view()),
     path('change_password/<uuid:pk>/', ChangePasswordView.as_view(), name='auth_change_password'),
 ]

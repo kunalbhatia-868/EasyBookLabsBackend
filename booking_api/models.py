@@ -7,6 +7,7 @@ from auth_api.utils import LowercaseEmailField
 from django.http import Http404
 # Create your models here.
 
+
 class Equipment(models.Model):
     id = models.UUIDField(primary_key = True,default = uuid.uuid4,editable = False)
     name = models.CharField(_('name'),max_length = 200)
@@ -96,6 +97,10 @@ class Lab(models.Model):
     @staticmethod
     def get_all_lab_equipments(lab_id):
         return Lab.objects.get(id=lab_id).equipments.all()
+    
+    @staticmethod
+    def get_labs_by_lab_type(text):
+        return Lab.objects.filter(type__icontains=text)
 
 class Slot(models.Model):
     class DayChoices(models.TextChoices):
@@ -137,11 +142,24 @@ class Slot(models.Model):
         return slots
 
 class Booking(models.Model):
+    class StatusChoices(models.TextChoices):
+        SUCCESS = 'SU',"SUCCESS"
+        PENDING = 'PE',"PENDING"  
+        NA = "NA","NA"
+    
+    class PaymentChoices(models.TextChoices):
+        DirectPay = 'DP',"DirectPay"
+        PayViaCollege = 'PC',"PayViaCollege"  
+        NA = "NA","NA"
+
     id = models.UUIDField(primary_key = True,default = uuid.uuid4,editable = False)
     slot_id = models.ForeignKey(Slot,on_delete = models.CASCADE,related_name = "bookings")
     lab_id = models.ForeignKey(Lab,on_delete = models.CASCADE,related_name = "bookings")
     student_id = models.ForeignKey(Student,on_delete = models.CASCADE,related_name = "bookings")
     date = models.DateField()
+    status = models.CharField(max_length = 2,choices = StatusChoices.choices,default=StatusChoices.NA)
+    payment_mode = models.CharField(max_length = 2,choices = PaymentChoices.choices,default=PaymentChoices.NA)
+    special_requirement=models.TextField(null=True,blank=True)
     created_on = models.DateTimeField(auto_now_add = True)
     updated_on = models.DateTimeField(auto_now = True)
     # status
@@ -209,4 +227,27 @@ class Professor(models.Model):
         except Professor.DoesNotExist:
             return None
         
+class Confirmation(models.Model):
+    class StatusChoices(models.TextChoices):
+        SUCCESS = 'SU',"SUCCESS"
+        PENDING = 'PE',"PENDING"  
+        REJECTED = 'RE',"REJECTED"
     
+    class TypeChoices(models.TextChoices):
+        CheckIn = 'CI',"CheckIn"
+        PayViaCollege = 'PC',"PayViaCollege"  
+
+    id = models.UUIDField(primary_key = True,default = uuid.uuid4,editable = False)
+    booking_id = models.ForeignKey(Booking,on_delete = models.CASCADE,related_name = "confirmations")
+    sender_institute=models.ForeignKey(Institute,on_delete = models.CASCADE,related_name = "confirmation_bookings")
+    reciever_institute=models.ForeignKey(Institute,on_delete = models.CASCADE,related_name = "college_confirmation")    #our+ college confirmations
+    status = models.CharField(max_length = 2,choices = StatusChoices.choices,default=StatusChoices.PENDING)
+    type = models.CharField(max_length = 2,choices = TypeChoices.choices)
+    created_on = models.DateTimeField(auto_now_add = True)
+    updated_on = models.DateTimeField(auto_now = True)
+    #recievers is supposed to apy
+
+class StudentEvaluation(models.Model):
+    id = models.UUIDField(primary_key = True,default = uuid.uuid4,editable = False)
+    booking_id = models.OneToOneField(Booking,on_delete = models.CASCADE,related_name = "review")
+    remarks=models.TextField()

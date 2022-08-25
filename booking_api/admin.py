@@ -11,4 +11,6 @@ admin.site.register([
     models.Booking,
     models.Rating,
     models.Professor,
+    models.Confirmation,
+    models.StudentEvaluation
 ])

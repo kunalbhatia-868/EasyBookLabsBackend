@@ -6,6 +6,9 @@ from auth_api.serializers import StudentSerializer, UserProfileSerializer,Instit
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth.mixins import LoginRequiredMixin
+from booking_api.models import StudentEvaluation
+from booking_api.serializers import StudentEvaluationSerializer
+
 # from user.permissions import isInstitute
 # Create your views here.
 
@@ -50,3 +53,14 @@ class InstituteUpdateView(generics.UpdateAPIView):
     permission_classes=[IsAuthenticated]
     # permission_classes=[IsAuthenticated,isInstitute]
     serializer_class = InstituteSerializer
+
+class InstituteStudentsEvaluations(APIView):
+    def get(self,request,id):
+        institute_students=Institute.objects.get(id=id).student_set.all()
+        student_evaluations=StudentEvaluation.objects.filter(booking_id__student_id__in=institute_students)
+        serializer=StudentEvaluationSerializer(student_evaluations,many=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data,status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)

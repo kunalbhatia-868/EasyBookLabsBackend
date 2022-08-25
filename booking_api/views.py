@@ -12,7 +12,9 @@ from booking_api.models import (
     Professor,
     Rating,
     Slot,
-    Booking
+    Booking,
+    Confirmation,
+    StudentEvaluation
 )
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.authentication import JWTAuthentication
@@ -24,8 +26,11 @@ from booking_api.serializers import (
     LabTypeSerializer,
     ProfessorSerializer,
     RatingSerializer,
-    SlotSerializer
+    SlotSerializer,
+    ConfirmationSerializer,
+    StudentEvaluationSerializer
 )
+from auth_api.models import Institute
 
 # Create your views here.
 
@@ -281,6 +286,14 @@ class ResearchSearchView(APIView):
         serializer=ProfessorSerializer(research_set,many=True)
         return Response(serializer.data,status=status.HTTP_200_OK)
 
+class LabTypeSearch(APIView):
+    def get(self,request):
+        text=request.GET.get('text') or ''
+        labs_set=Lab.get_labs_by_lab_type(text) 
+        serializer=LabSerializer(labs_set,many=True)
+        return Response(serializer.data,status=status.HTTP_200_OK)
+
+
 class ResearchDetailView(APIView):
     def get(self,request,id):
         research_professor=Professor.get_professor(p_id=id)
@@ -289,3 +302,48 @@ class ResearchDetailView(APIView):
             return Response(serializer.data,status=status.HTTP_200_OK)
         return Response(status=status.HTTP_404_NOT_FOUND)
         
+
+class ConfirmationListCreateView(APIView):
+    def post(self,request,id):
+        request.data['reciever_institute']=id
+        serializer=ConfirmationSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data,status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
+
+    def get(self,request,id):
+        reciever_institute=id 
+        confirmation=Confirmation.objects.filter(reciever_institute=reciever_institute)
+        serializer=ConfirmationSerializer(data=confirmation,many=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data,status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
+
+
+class ConfirmationUpdateView(APIView):
+    def patch(self,request,id):
+        confirmation=Confirmation.objects.get(id=id)
+        booking=Booking.objects.get(booking_id=confirmation.booking_id.id)
+        decision=request.data['decision']
+        if decision=="yes":
+            booking.status=Booking.StatusChoices.SUCCESS
+            booking.save()
+            confirmation.status=Confirmation.StatusChoices.SUCCESS
+        else:
+            confirmation.status=Confirmation.StatusChoices.REJECTED
+        confirmation.save()
+        return confirmation
+
+class BookingEvaluation(APIView):
+    def post(self,request,id):
+        request.data['booking_id']=id
+        serializer=StudentEvaluationSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data,status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)

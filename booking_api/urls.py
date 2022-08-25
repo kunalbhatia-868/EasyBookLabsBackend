@@ -1,8 +1,11 @@
 from django.urls import path
-from booking_api.views import (
+from booking.views import (
+    BookingEvaluation,
     BookingInstituteListView,
     BookingLabListView,
     BookingStudentListCreateView,
+    ConfirmationListCreateView,
+    
     EquipmentListCreateView,
     EquipmentRUDView,
     ExperimentListCreateView,
@@ -19,7 +22,8 @@ from booking_api.views import (
     SearchView,
     SlotDeleteView,
     SlotListCreateView,
-    InstituteProfessorsListCreateView
+    InstituteProfessorsListCreateView,
+    LabTypeSearch
 )
 urlpatterns = [
     path('equipments/',EquipmentListCreateView.as_view()),
@@ -42,4 +46,7 @@ urlpatterns = [
     path('search/labs/',SearchView.as_view()),
     path('search/research/',ResearchSearchView.as_view()),
     path('researcher/<uuid:id>/',ResearchDetailView.as_view()),
+    path('confirm/<uuid:id>/',ConfirmationListCreateView.as_view()),
+    path('confirm/<uuid:id>/edit/',ConfirmationListCreateView.as_view()),
+    path('booking/<uuid:id>/evaluation/',BookingEvaluation.as_view())
 ]
