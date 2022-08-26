@@ -248,7 +248,7 @@ class BookingDeleteView(DestroyAPIView):
 
 class RatingCreateRetrieveView(APIView):
     def get(self,request,id):
-        return Lab.objects.get(id=id).rating
+        return Response({"rating":Lab.objects.get(id=id).rating},status=status.HTTP_200_OK)
     
     def post(self,request,id):
         request.data['lab_id']=id
