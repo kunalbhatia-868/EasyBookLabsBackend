@@ -310,16 +310,10 @@ class ConfirmationListCreateView(APIView):
             return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
 
     def get(self,request,id):
-        reciever_institute=id 
-        confirmation=Confirmation.objects.filter(reciever_institute=reciever_institute)
-        serializer=ConfirmationSerializer(data=confirmation,many=True)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data,status=status.HTTP_201_CREATED)
-        else:
-            return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
-
-
+        confirmations=Confirmation.objects.filter(reciever_institute__id=id)
+        serializer=ConfirmationSerializer(confirmations,many=True)
+        return Response(serializer.data,status=status.HTTP_200_OK)
+        
 class ConfirmationUpdateView(APIView):
     def patch(self,request,id):
         confirmation=Confirmation.objects.get(id=id)
@@ -343,3 +337,5 @@ class BookingEvaluation(APIView):
             return Response(serializer.data,status=status.HTTP_201_CREATED)
         else:
             return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
+
+            
