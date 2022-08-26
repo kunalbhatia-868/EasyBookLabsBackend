@@ -338,4 +338,11 @@ class BookingEvaluation(APIView):
         else:
             return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
 
-            
+    def get(self,request,id):
+        booking_id=id
+        try:
+            evaluation=StudentEvaluation.objects.get(booking_id__id=booking_id)
+            serializer=StudentEvaluationSerializer(evaluation)
+            return Response(serializer.data,status=status.HTTP_200_OK)   
+        except StudentEvaluation.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
