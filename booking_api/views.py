@@ -57,7 +57,7 @@ class EquipmentListCreateView(APIView):
             lab.equipments.add(equipment)
             lab.save()
 
-        return Response(status=status.HTTP_201_CREATED)
+        return Response({"message":"success"},status=status.HTTP_201_CREATED)
 
 class EquipmentRUDView(RetrieveUpdateDestroyAPIView):
     queryset=Equipment.get_all_equipments()
@@ -71,9 +71,9 @@ class ExperimentListCreateView(APIView):
         return Response(serializer.data,status=status.HTTP_200_OK)
     
     def post(self,request):
-        experiments=request.data['experiments']
-        new_experiments=request.data['new_experiment']
-        lab_id=request.data['lab_id']
+        experiments=request.data.get('experiments')
+        new_experiments=request.data.get('new_experiment')
+        lab_id=request.data.get('lab_id')
         for experiment_id in experiments:
             experiment=Experiment.objects.get(id=experiment_id)
             lab=Lab.objects.get(id=lab_id)
@@ -81,13 +81,13 @@ class ExperimentListCreateView(APIView):
             lab.save()
 
         for experiment in new_experiments:
-            experiment=Experiment(name=experiment.name,description=experiment.description)
+            experiment=Experiment(name=experiment.get('name'),description=experiment.get('description'))
             experiment.save()
             lab=Lab.objects.get(id=lab_id)
             lab.experiments.add(experiment)
             lab.save()
 
-        return Response(status=status.HTTP_201_CREATED)
+        return Response({"message":"success"},status=status.HTTP_201_CREATED)
         
 class ExperimentRUDView(RetrieveUpdateDestroyAPIView):
     queryset=Experiment.get_all_experiments()
