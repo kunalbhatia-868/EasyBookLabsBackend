@@ -312,7 +312,7 @@ class ConfirmationListCreateView(APIView):
     def get(self,request,id):
         reciever_institute=id 
         confirmation=Confirmation.objects.filter(reciever_institute=reciever_institute)
-        serializer=ConfirmationSerializer(data=confirmation,many=True)
+        serializer=ConfirmationSerializer(confirmation,many=True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data,status=status.HTTP_201_CREATED)
