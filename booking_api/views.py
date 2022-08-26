@@ -346,3 +346,13 @@ class BookingEvaluation(APIView):
             return Response(serializer.data,status=status.HTTP_200_OK)   
         except StudentEvaluation.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
+
+class BookingDeleteview(DestroyAPIView):
+    queryset=Booking.objects.all()
+    serializer_class=BookingSerializer
+
+class InstituteStudentBookings(APIView):
+    def get(self,request,id):
+        bookings=Booking.get_all_institute_students_bookings(institute_id=id)
+        serializer=BookingSerializer(bookings,many=True)
+        return Response(serializer.data,status=status.HTTP_200_OK)

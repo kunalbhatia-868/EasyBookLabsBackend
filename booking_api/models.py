@@ -178,7 +178,7 @@ class Booking(models.Model):
 
     @staticmethod
     def get_all_institute_students_bookings(institute_id):
-        return Booking.objects.filter()
+        return Booking.objects.filter(student_id__institute_id__id=institute_id)
     
     
     @staticmethod

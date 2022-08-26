@@ -1,10 +1,12 @@
 from django.urls import path
 from booking_api.views import (
+    BookingDeleteView,
     BookingEvaluation,
     BookingInstituteListView,
     BookingLabListView,
     BookingStudentListCreateView,
     ConfirmationListCreateView,
+    InstituteStudentBookings,
     RatingCreateRetrieveView,
     EquipmentListCreateView,
     EquipmentRUDView,
@@ -50,5 +52,7 @@ urlpatterns = [
     path('confirm/<uuid:id>/edit/',ConfirmationListCreateView.as_view()),
     path('booking/<uuid:id>/evaluation/',BookingEvaluation.as_view()),
     path('search/labs/lab_type/',LabTypeSearch.as_view()),
-    path('labs/<uuid:id>/ratings/',RatingCreateRetrieveView.as_view())
+    path('labs/<uuid:id>/ratings/',RatingCreateRetrieveView.as_view()),
+    path('bookings/<uuid:pk>/',BookingDeleteView.as_view()), 
+    path('institute/<uuid:id>/students/',InstituteStudentBookings.as_view())
 ]
