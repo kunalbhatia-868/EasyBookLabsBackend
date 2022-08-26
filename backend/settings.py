@@ -159,8 +159,8 @@ SIMPLE_JWT = {
 
 django_heroku.settings(locals())
 
-# CORS_ORIGIN_WHITELIST = [
+CORS_ORIGIN_WHITELIST = [
 #     'http://localhost:3000',
-#     'https://630857d8f8989642091cc742--polite-creponne-ab58e1.netlify.app/'
-# ]
-CORS_ALLOW_ALL_ORIGINS=True
+    'https://630857d8f8989642091cc742--polite-creponne-ab58e1.netlify.app/',
+]
+# CORS_ALLOW_ALL_ORIGINS=True
