@@ -41,9 +41,9 @@ class EquipmentListCreateView(APIView):
         return Response(serializer.data,status=status.HTTP_200_OK)
     
     def post(self,request):
-        equipments=request.data['equipments']
-        new_equipments=request.data['new_equipment']
-        lab_id=request.data['lab_id']
+        equipments=request.data.get('equipments')
+        new_equipments=request.data.get('new_equipment')
+        lab_id=request.data.get('lab_id')
         for equipment_id in equipments:
             equipment=Equipment.objects.get(id=equipment_id)
             lab=Lab.objects.get(id=lab_id)
@@ -51,7 +51,7 @@ class EquipmentListCreateView(APIView):
             lab.save()
 
         for equipment in new_equipments:
-            equipment=Equipment(name=equipment.name,description=equipment.description)
+            equipment=Equipment(name=equipment.get('name'),description=equipment.get('description'))
             equipment.save()
             lab=Lab.objects.get(id=lab_id)
             lab.equipments.add(equipment)
