@@ -53,6 +53,6 @@ urlpatterns = [
     path('booking/<uuid:id>/evaluation/',BookingEvaluation.as_view()),
     path('search/labs/lab_type/',LabTypeSearch.as_view()),
     path('labs/<uuid:id>/ratings/',RatingCreateRetrieveView.as_view()),
-    path('bookings/<uuid:pk>/',BookingDeleteView.as_view()), 
+    path('bookings/<uuid:pk>/delete/',BookingDeleteView.as_view()), 
     path('institute/<uuid:id>/students/',InstituteStudentBookings.as_view())
 ]
